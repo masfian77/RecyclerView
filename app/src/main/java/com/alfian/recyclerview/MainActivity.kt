@@ -2,13 +2,18 @@ package com.alfian.recyclerview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private val list = ArrayList<Hero>()
+
+    private var title = "Mode List"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         list.addAll(getListHeroes())
         showRecyclerList()
+
+        setActionBarTitle(title)
 
     }
 
@@ -41,5 +48,49 @@ class MainActivity : AppCompatActivity() {
         rv_heroes.layoutManager = LinearLayoutManager(this)
         val listHeroAdapter = ListHeroAdapter(list)
         rv_heroes.adapter = listHeroAdapter
+    }
+
+    private fun showRecyclerGrid() {
+        rv_heroes.layoutManager = GridLayoutManager(this, 2)
+        val gridHeroAdapter = GridHeroAdapter(list)
+        rv_heroes.adapter = gridHeroAdapter
+    }
+
+    private fun showRecyclerCardView() {
+        rv_heroes.layoutManager = LinearLayoutManager(this)
+        val cardViewHeroAdapter = CardViewHeroAdapter(list)
+        rv_heroes.adapter = cardViewHeroAdapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        setMode(item.itemId)
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setMode(selectedMode: Int) {
+        when (selectedMode) {
+            R.id.action_list -> {
+                title = "Mode List"
+                showRecyclerList()
+            }
+            R.id.action_grid -> {
+                title = "Mode Grid"
+                showRecyclerGrid()
+            }
+            R.id.action_cardview -> {
+                title = "Mode CardView"
+                showRecyclerCardView()
+            }
+        }
+        setActionBarTitle(title)
+    }
+
+    private fun setActionBarTitle(title: String?) {
+        supportActionBar?.title = title
     }
 }
